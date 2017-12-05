@@ -29,8 +29,9 @@ class AnalysisPlugin(BasePlugin):
     def process_object(self, file_object):
         result = self.IPAndURIFinder.analyze_file(file_object.file_path, separate_ipv6=True)
         logging.debug(result)
-        for key in ['uris', 'ips_v4', 'ips_v6']:
-            result[key] = self._remove_duplicates(result[key])
+        result['uris'] = self._remove_duplicates(result['uris'])
+        for key in ['ips_v4', 'ips_v6']:
+            result[key][0] = self._remove_duplicates(result[key][0])
         file_object.processed_analysis[self.NAME] = result
         file_object.processed_analysis[self.NAME]['summary'] = self._get_summary(result)
         return file_object
