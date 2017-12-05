@@ -31,7 +31,8 @@ class AnalysisPlugin(BasePlugin):
         logging.debug(result)
         result['uris'] = self._remove_duplicates(result['uris'])
         for key in ['ips_v4', 'ips_v6']:
-            result[key][0] = self._remove_duplicates(result[key][0])
+            if result[key]:
+                result[key] = self._remove_sublist_duplicates(result[key])
         file_object.processed_analysis[self.NAME] = result
         file_object.processed_analysis[self.NAME]['summary'] = self._get_summary(result)
         return file_object
@@ -42,6 +43,11 @@ class AnalysisPlugin(BasePlugin):
         for key in ['uris', 'ips_v4', 'ips_v6']:
             summary.extend(results[key])
         return summary
+
+    @staticmethod
+    def _remove_sublist_duplicates(l):
+        dict_without_duplicates = set(map(tuple, l))
+        return (list(map(list, dict_without_duplicates)))
 
     @staticmethod
     def _remove_duplicates(l):
