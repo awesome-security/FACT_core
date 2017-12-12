@@ -24,11 +24,12 @@ class TestAnalysisPluginIpAndUriFinder(AnalysisPluginTest):
         processed_object = self.analysis_plugin.process_object(tmp_fo)
         results = processed_object.processed_analysis[self.PLUGIN_NAME]
         tmp.close()
-        expected_results_v4 = [["255.255.255.255", ""], ["1.2.3.4", "(47.913, -122.3042)"], ["1.1.1.123", "(-37.7, 145.1833)"]]
-        expected_results_v6 = [["1234:1234:abcd:abcd:1234:1234:abcd:abcd", ""], ["2001:db8:0:0:8d3::", ""]]
         self.assertEqual(results["uris"], [])
-        self.assertEqual(sorted(expected_results_v4), sorted(results["ips_v4"]))
-        self.assertEqual(sorted(expected_results_v6), sorted(results["ips_v6"]))
+        self.assertIn({'ip': '1.2.3.4', 'geo_location': '(47.913, -122.3042)'}, results['ips_v4'])
+        self.assertIn({'ip': '1.1.1.123', 'geo_location': '(-37.7, 145.1833)'}, results['ips_v4'])
+        self.assertIn({'ip': '255.255.255.255', 'geo_location': ''}, results['ips_v4'])
+        self.assertIn({'ip': '1234:1234:abcd:abcd:1234:1234:abcd:abcd', 'geo_location': ''}, results["ips_v6"])
+        self.assertIn({'ip': '2001:db8:0:0:8d3::', 'geo_location': ''}, results["ips_v6"])
 
     def test_process_object_uris(self):
         tmp = tempfile.NamedTemporaryFile()

@@ -30,9 +30,9 @@ class AnalysisPlugin(BasePlugin):
         result = self.IPAndURIFinder.analyze_file(file_object.file_path, separate_ipv6=True)
         logging.debug(result)
         result['uris'] = self._remove_duplicates(result['uris'])
-        for key in ['ips_v4', 'ips_v6']:
-            if result[key]:
-                result[key] = self._remove_sublist_duplicates(result[key])
+        #   for key in ['ips_v4', 'ips_v6']:
+        #    if result[key]:
+        #        result[key] = self._remove_sublist_duplicates(result[key])
         file_object.processed_analysis[self.NAME] = result
         file_object.processed_analysis[self.NAME]['summary'] = self._get_summary(result)
         return file_object
@@ -40,8 +40,12 @@ class AnalysisPlugin(BasePlugin):
     @staticmethod
     def _get_summary(results):
         summary = []
-        for key in ['uris', 'ips_v4', 'ips_v6']:
-            summary.extend(results[key])
+        for key in ['ips_v4', 'ips_v6']:
+            dict = {}
+            for i in results[key]:
+                dict.append(i['ip'])
+            summary.extend(dict)
+        summary.extend(results['uris'])
         return summary
 
     @staticmethod
