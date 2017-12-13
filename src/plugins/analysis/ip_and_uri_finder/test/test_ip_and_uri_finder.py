@@ -26,7 +26,7 @@ class TestAnalysisPluginIpAndUriFinder(AnalysisPluginTest):
         tmp.close()
         self.assertEqual(results["uris"], [])
         self.assertIn({'ip': '1.2.3.4', 'geo_location': '(47.913, -122.3042)'}, results['ips_v4'])
-        self.assertIn({'ip': '1.1.1.123', 'geo_location': '(-37.7, 145.1833)'}, results['ips_v4'])
+        self.assertIn({'ip': '1.1.1.123', 'geo_location': '(-37.7333, 145.15)'}, results['ips_v4'])
         self.assertIn({'ip': '255.255.255.255', 'geo_location': ''}, results['ips_v4'])
         self.assertIn({'ip': '1234:1234:abcd:abcd:1234:1234:abcd:abcd', 'geo_location': ''}, results["ips_v6"])
         self.assertIn({'ip': '2001:db8:0:0:8d3::', 'geo_location': ''}, results["ips_v6"])
@@ -44,3 +44,10 @@ class TestAnalysisPluginIpAndUriFinder(AnalysisPluginTest):
         self.assertIn("https://www.test.de/test/", results["uris"])
         self.assertIn("ftp://ftp.is.co.za/rfc/rfc1808.txt", results["uris"])
         self.assertIn("telnet://192.0.2.16:80/", results["uris"])
+
+    def test_get_summary_of_results(self):
+        results = {'ips_v4': [{'ip': '1.2.3.4', 'geo_location': '(47.913, -122.3042)'}, {'ip': '255.255.255.255', 'geo_location': ''}],
+                   'ips_v6': [{'ip': '1.2.3.7', 'geo_location': '(47.913, -122.3042)'}, {'ip': '2001:db8:0:0:8d3::', 'geo_location': ''}],
+                   'uris': {'http://www.google.de'}}
+        expected_result = ['1.2.3.4', '255.255.255.255', '1.2.3.7', '2001:db8:0:0:8d3::', 'http://www.google.de']
+        self.assertEqual(self.analysis_plugin._get_summary(results), expected_result)

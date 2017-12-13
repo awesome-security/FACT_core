@@ -34,17 +34,18 @@ class AnalysisPlugin(BasePlugin):
         #    if result[key]:
         #        result[key] = self._remove_sublist_duplicates(result[key])
         file_object.processed_analysis[self.NAME] = result
+        # test are not working if database is updated. mock is necessary
         file_object.processed_analysis[self.NAME]['summary'] = self._get_summary(result)
         return file_object
 
-    @staticmethod
-    def _get_summary(results):
+    # @staticmethod
+    def _get_summary(self, results):
         summary = []
         for key in ['ips_v4', 'ips_v6']:
-            dict = {}
             for i in results[key]:
-                dict.append(i['ip'])
-            summary.extend(dict)
+                print(i)
+                summary.append(i['ip'])
+                print(summary)
         summary.extend(results['uris'])
         return summary
 
